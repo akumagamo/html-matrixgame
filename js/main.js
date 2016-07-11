@@ -10,13 +10,19 @@ var gameId = 0;
 
 document.getElementById("startGameButton").addEventListener("click", startGame);
 document.getElementById("stopGameButton").addEventListener("click", stopGame);
+document.getElementById("clearGameButton").addEventListener("click", clearGame);
 
 function startGame(){
-    gameId = setInterval(game.render.bind(game),100);
+    game.running = true;
+    setTimeout(game.startGameLoop, STARTFRAMESPEED);
 }
 
 function stopGame(){
-    clearInterval(gameId);
+    game.running = false;
+}
+
+function clearGame(){
+    game.clearWholeGameBoard();
 }
 
 debug("Up and Running!");
@@ -32,26 +38,29 @@ function createRandomBlockValue(){
     return BLOCKVALUES[createRandomNumberFromZeroTo(5)];
 }
 
-const STARTPOINT = {x: 4, y:0};
+function initializeMatrix(height, width){
+    return ((h, w) => "0".repeat(w).split("").map(x=>"0".repeat(h).split("")))(height, width);
+}
+
+
+
+const STARTPOINT = {x: 2, y:0};
+const STARTFRAMESPEED = 900;
 
 var game = {
-    init: function () {
+    init: function (renderengine) {
         // prepare Engine
         this.gameState = {
             gameBoard: {
-                data: ((height, width) => "0".repeat(width).split("").map(x=>"0".repeat(height).split("")))(15, 9),
-                size: {
-                    height: 15,
-                    width: 9
-                }
-            }
+                data: initializeMatrix(10, 5)
+            },
+            renderer:renderengine
         };
 
         this.currentGame = {
             isActive: true,
             score: 0,
-            elapsedTime: 0,
-            destroyedBlocks: 0 
+            level: 0
         };
 
         this.createNewBlock();
@@ -68,6 +77,10 @@ var game = {
         debug("isGameEnded " +  (this.gameState.gameBoard.data[position.x][position.y] != "0"));
         return this.gameState.gameBoard.data[position.x][position.y] != "0";
     },
+    clearWholeGameBoard: function(){
+        delete this.gameState.gameBoard.data; 
+        this.gameState.gameBoard.data = initializeMatrix(10, 5);
+    },
     clearValueOnGameBoard: function(position){
         this.setValueOnGameBoard(position, "0");
     },
@@ -77,24 +90,10 @@ var game = {
     setNewBlockOnGameBoard: function(position){
         this.setValueOnGameBoard(position, this.gameState.newBlock.value);
     },
-    advanceOneStep: function () {
-       if(this.willCollide(2)){
-            // calculate Score
-
-             this.setValueOnGameBoard(this.gameState.newBlock.position, this.gameState.newBlock.value);
-
-             this.calculateBlock();
-
-            if(!this.isGameEnded(STARTPOINT)){
-                this.createNewBlock();
-            }else{
-                debug("DONE");
-                clearInterval(1);
-            }
-       }
-       else{
-            this.moveDown();
-       }
+    updateLevel: function(){
+        if(this.currentGame.score%10===0){
+            this.currentGame.level = this.currentGame.score/10;
+        }
     },
     calculateBlock: function() {
         var left = this.gameState.newBlock.position.x;
@@ -113,7 +112,7 @@ var game = {
             }
         }
 
-         for(var r = right + 1 ; r < this.gameState.gameBoard.size.width ; r++){
+         for(var r = right + 1 ; r < this.gameState.gameBoard.data.length ; r++){
             if(this.gameState.gameBoard.data[r][this.gameState.newBlock.position.y] === value){
                 this.clearValueOnGameBoard({x: r, y: this.gameState.newBlock.position.y});
                 explode = true;
@@ -123,7 +122,7 @@ var game = {
             }
         }
 
-        for(var b = bottom + 1 ; b < this.gameState.gameBoard.size.height ; b++){
+        for(var b = bottom + 1 ; b < this.gameState.gameBoard.data[0].length ; b++){
             if(this.gameState.gameBoard.data[this.gameState.newBlock.position.x][b] === value){
                  this.clearValueOnGameBoard({x: this.gameState.newBlock.position.x, y: b});
                  explode = true;
@@ -138,20 +137,20 @@ var game = {
             this.currentGame.score++;
             debug("BOOM");
         }
-
+        this.updateLevel();
     }, 
     willCollide: function (direction) {
         var position = this.gameState.newBlock.position; 
         
         switch (direction) {
             case 1:
-                if(this.gameState.newBlock.position.x + 1 > 8){
+                if(this.gameState.newBlock.position.x + 1 > 4){
                     return true;
                 }
                 return this.gameState.gameBoard.data[position.x + 1][position.y] != "0";
                 break;
             case 2:
-                if (this.gameState.newBlock.position.y >= this.gameState.gameBoard.size.height){
+                if (this.gameState.newBlock.position.y >= this.gameState.gameBoard.data[0].length){
                     return true;
                 }
                 return (this.gameState.gameBoard.data[position.x][position.y +1] != "0");
@@ -170,16 +169,36 @@ var game = {
 
     },
     render: function(){
-        game.advanceOneStep();
-        helperDrawer(this.gameState.gameBoard.data);
-        debug("Score: " + this.currentGame.score);
+        window.requestAnimationFrame(function (){
+            game.gameState.renderer(game.gameState.gameBoard.data);
+        });
+    },
+    startGameLoop: function(){
+        if(game.running){
+            game.moveDown();
+            setTimeout(game.startGameLoop, STARTFRAMESPEED - game.currentGame.level*100);
+        }
     },
     moveDown: function(){
         if(!this.willCollide(2)){
             this.clearValueOnGameBoard(this.gameState.newBlock.position);
             this.gameState.newBlock.position.y++;
             this.setNewBlockOnGameBoard(this.gameState.newBlock.position);
+       } else {
+            // calculate Score
+
+             this.setValueOnGameBoard(this.gameState.newBlock.position, this.gameState.newBlock.value);
+
+             this.calculateBlock();
+
+            if(!this.isGameEnded(STARTPOINT)){
+                this.createNewBlock();
+            }else{
+                debug("DONE");
+                this.running = false;
+            }
        }
+       game.render();
     },
     moveLeft: function(){
         if(!this.willCollide(3)){
@@ -187,6 +206,7 @@ var game = {
             this.gameState.newBlock.position.x--;
             this.setNewBlockOnGameBoard(this.gameState.newBlock.position);
         }
+        game.render();
     },
     moveRight: function(){
         if(!this.willCollide(1)){
@@ -194,6 +214,7 @@ var game = {
             this.gameState.newBlock.position.x++;
             this.setNewBlockOnGameBoard(this.gameState.newBlock.position);
         }
+        game.render();
     },
     keyEvent: function(e){
         debug(e.keyCode);
@@ -219,9 +240,9 @@ var game = {
 function helperDrawer(arr) {
     var tab = "<table>";
 
-    for(var i = 0; i < 15;i++){
+    for(var i = 0; i < 10;i++){
         var row = "<tr>";
-        for(var j=0;j < 9; j++){
+        for(var j=0;j < 5; j++){
             row += "<td class='" + ((arr[j][i]) === "0"? "":"block")+ "'>" + (arr[j][i]).replace(/0/gi, "&nbsp;") + "</td>";
         }
         tab += row + "</tr>";
@@ -229,10 +250,24 @@ function helperDrawer(arr) {
     tab += "</table>";
 
     document.getElementById("result").innerHTML = tab;
+    document.getElementById("scoreBoard").innerHTML = game.currentGame.score;
 }
 
-game.init();
-
-//setInterval(game.render.bind(game),33);
+game.init(helperDrawer);
 
 window.addEventListener("keydown", game.keyEvent);
+
+var testMe = 0;
+var start = (new Date).getTime();
+function it(){
+    console.info(arguments);
+    console.info((new Date).getTime()-start);
+    if(testMe===0){
+        window.requestAnimationFrame(it);
+    }
+    testMe++;
+}
+
+
+window.requestAnimationFrame(it);
+
