@@ -1,19 +1,22 @@
-# basic_programm node-boilerplate
-## Versionnumber 0.2.0 (2016-04-06) Alpha
-(***Documentation last update 2016-04-06 23:00***)  
+# Mini Matrix Styled block Game
+## Versionnumber 0.3.0 (2016-07-25) Alpha
+(***Documentation last update 2016-07-25 20:00***)  
 
-boilerplate for node apps
+mini matrix styled block game here is a [small demo](https://rawgit.com/akumagamo/html-matrixgame/index.html)
 
 ## Features
-* demo mocha test file
-* demo selenium test file
-* demo cucumber test files
-* scripts for running (mocha, cucumber, jshint)
+* canvas renderer
+* html renderer
+* mini scoring System
+* key inputs
 
 ## Roadmap / Future Features
-* more explicit demo files
-* demo for jsdoc
-* jsdoc integration
+* optimizing Code
+* code styling 
+* optimizing Canvas Renderer
+* new point system and new Level counter
+* blocks over crushed blocks slide down
+* Mini docu
 
 ## Known Bugs
 * none
@@ -21,56 +24,23 @@ boilerplate for node apps
 ## Usage
 
 ## Setup
-Download Source from SourceLink and execute "npm install"
+Download Source from SourceLink
 
 ## SourceControl Link & Information
-git@github.com:akumagamo/...
+git@github.com:akumagamo/html-matrixgame.git
 
 ## Documentation
 
-### Base Code Example
-	...
-
 ### File / Folder Structure
 
-     +-+- basic_programm
-       +-+- documents
-       | +- jsdoc  (output directory for jsdoc script)
-       | +- ...
-       +-+- logs (logfile default folder)
-       | +- ...
-       +-+- source
-       | +-+- node_modules (needed libs etc.)
-       | | +- ...
-       | +-+- tests
-       | | +-+- features
-       | | +-+- step_definitions
-       | | | +- demo_steps.js (demo step_definition file)
-       | | | +- ...
-       | | +- demo.feature (demo feature file)
-	   | | +- ...
-       | +-+- support_files
-       | | +- ...
-	   | +- demo.js (demo mocha file)
-       | +- ...
+     +-+- matrixgame
+       +-+- js
+       | +-- main.js
+       +-+- readme
+       | +-- screen-shot.png
        +- readme.md (this document)
-       +- app.js 
-       +- package.json
-       +- selenium.js  (demo selenium file)
+       +- index.html
        +- LICENSE
 
-### API / Commands
-
-#### Functions / Modules
-* ...
-
-#### Classes
-* ...
-
 ### External Libs
-* cucumber
-* jsdoc
-* jshint 
-* mocha
-* selenium-webdriver
-    * chromedriver.exe ( or/and others )
+* none

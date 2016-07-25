@@ -1,5 +1,5 @@
 "using strict";
-(function(){
+(function(usecanvas){
     const DEBUG = true;
     function debug (obj) {
         if(DEBUG){
@@ -38,6 +38,7 @@
             this.renderer = renderengine;
             this.running = false;
             this.initializeCurrentGame();
+            this.render();
         },
         initializeCurrentGame: function(){
             this.currentGame = {
@@ -225,7 +226,7 @@
         for(var i = 0; i < arr[0].length;i++){
             var row = "<tr>";
             for(var j=0;j < arr.length; j++){
-                row += "<td class='" + ((arr[j][i]) === "0"? "":"block")+ "'>" + (arr[j][i]).replace(/0/gi, "&nbsp;") + "</td>";
+                row += "<td class='" + ((arr[j][i]) === "0"? "":"block")+ "'>" + (arr[j][i]).replace(/0/gi, "") + "</td>";
             }
             tab += row + "</tr>";
         }
@@ -234,6 +235,49 @@
         document.getElementById("result").innerHTML = tab;
         document.getElementById("scoreBoard").innerHTML = game.currentGame.score;
     }
+    
+      function testCanvasDrawer(size) {
+        
+        var blockSize = (size.width-2) / 5;
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+
+        canvas.width = size.width;
+        canvas.height = size.height;
+        
+        document.getElementById("result").appendChild(canvas);
+         
+        return function (arr) {
+            context.fillStyle = "white";
+            context.fillRect(0,0, size.width, size.height);
+            
+            for(var i = 0; i < arr[0].length;i++){
+                var y = i * blockSize  + 2;
+                for(var j=0;j < arr.length; j++){
+                    var x = j * blockSize;
+                    if((arr[j][i]) !== "0"){
+                        context.strokeStyle = "green";
+                        context.rect(x+1, y, blockSize, blockSize);
+                        context.stroke();
+                        context.fillStyle = "green";
+                        context.font = "36px Arial";
+                        var delta = (blockSize - context.measureText((arr[j][i])).width)/2
+                        context.fillText((arr[j][i]).replace(/0/gi, ""), x + delta , y + blockSize - (blockSize/4) );
+                    }
+                }
+            }
+            
+            context.beginPath();
+            context.strokeStyle = "blue";
+            context.moveTo(0, 0);
+            context.lineTo(0, size.height);
+            context.lineTo(size.width, size.height);
+            context.lineTo(size.width,0);
+            context.stroke();
+            
+            document.getElementById("scoreBoard").innerHTML = game.currentGame.score;
+       };
+    }
 
     document.getElementById("startGameButton").addEventListener("click", game.startGameLoop);
     document.getElementById("stopGameButton").addEventListener("click", game.stopGameLoop);
@@ -241,5 +285,11 @@
 
     document.body.addEventListener("keydown", game.keyEvent);
 
-    game.init(helperDrawer);
-}());
+	if(usecanvas){
+    	game.init(testCanvasDrawer({width:200, height:400}));
+	}else{
+		game.init(helperDrawer);
+	}
+    
+    
+}(true));
