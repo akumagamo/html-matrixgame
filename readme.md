@@ -28,10 +28,10 @@ mini matrix styled block game here is a [small demo](https://rawgit.com/akumagam
 ## Usage
 
 ## Setup
-Download Source from SourceLink
+download Source from SourceLink
 
 ## SourceControl Link & Information
-git@github.com:akumagamo/html-matrixgame.git
+https://github.com/akumagamo/html-matrixgame.git
 
 ## Documentation
 
