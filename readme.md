@@ -2,7 +2,7 @@
 ## Versionnumber 0.3.0 (2016-07-25) Alpha
 (***Documentation last update 2016-07-25 20:00***)  
 
-mini matrix styled block game here is a [small demo](https://rawgit.com/akumagamo/html-matrixgame/index.html)
+mini matrix styled block game here is a [small demo](https://rawgit.com/akumagamo/html-matrixgame/master/index.html)
 
 ## Features
 * canvas renderer
