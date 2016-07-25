@@ -17,6 +17,10 @@ mini matrix styled block game here is a [small demo](https://rawgit.com/akumagam
 * new point system and new Level counter
 * blocks over crushed blocks slide down
 * Mini docu
+* Gamesetting configurator
+* highscore
+   * local
+   * global
 
 ## Known Bugs
 * none
