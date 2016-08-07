@@ -149,7 +149,7 @@
                 if(!game.newBlock){
                     game.createNewBlock();
                 }
-                game.render();
+                
                 game.gameLoop();
             }
         },
@@ -159,6 +159,7 @@
         gameLoop: function(){
             if(game.running){
                 game.moveDown();
+                game.render();
                 setTimeout(game.gameLoop, game.getGameLoopSpeed());
             }
         },
@@ -180,7 +181,7 @@
                         this.running = false;
                     }
             }
-            game.render();
+            //game.render();
         },
         moveLeft: function(){
             if(!this.willCollide(LEFT)){
@@ -188,7 +189,7 @@
                 this.newBlock.position.x--;
                 this.setValueOnGameBoard(this.newBlock.position, this.newBlock.value);
             }
-            game.render();
+           // game.render();
         },
         moveRight: function(){
             if(!this.willCollide(RIGHT)){
@@ -196,7 +197,7 @@
                 this.newBlock.position.x++;
                 this.setValueOnGameBoard(this.newBlock.position, this.newBlock.value);
             }
-            game.render();
+            //game.render();
         },
         keyEvent: function(event){
             if(game.running){
@@ -276,6 +277,24 @@
             context.stroke();
             
             document.getElementById("scoreBoard").innerHTML = game.currentGame.score;
+
+            var buttonSize = window.screen.width/4;
+
+            document.addEventListener("touchstart", function(event){
+                var x = event.touches[0].clientX;
+                var y = event.touches[0].clientY;
+                
+                if(y > window.screen.height*3/4){
+                    if( buttonSize > x ){
+                        game.moveLeft();
+                    } else if( buttonSize * 3 > x ){
+                        game.moveDown();
+                    } else {
+                        game.moveRight();
+                    }
+                }
+                
+            });
        };
     }
 
