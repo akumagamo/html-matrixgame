@@ -1,6 +1,6 @@
 # Mini Matrix Styled block Game
 ## Versionnumber 0.3.0 (2016-07-25) Alpha
-(***Documentation last update 2016-07-25 20:00***)  
+(***Documentation last update 2016-08-07 14:30***)  
 
 mini matrix styled block game. Here is a [small demo](https://rawgit.com/akumagamo/html-matrixgame/master/index.html)
 
@@ -14,6 +14,7 @@ mini matrix styled block game. Here is a [small demo](https://rawgit.com/akumaga
 * key inputs
 
 ## Roadmap / Future Features
+* Code Refactoring / Cleanup
 * optimizing Code
 * code styling 
 * optimizing Canvas Renderer
@@ -21,6 +22,7 @@ mini matrix styled block game. Here is a [small demo](https://rawgit.com/akumaga
 * blocks over crushed blocks slide down
 * Mini docu
 * Gamesetting configurator
+* Make Mobile
 * highscore
    * local
    * global
