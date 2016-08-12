@@ -247,7 +247,10 @@
         canvas.height = size.height;
         
         document.getElementById("result").appendChild(canvas);
-         
+        
+        document.addEventListener("touchend", function(event){
+        	touch = false;
+        });
         return function (arr) {
             context.fillStyle = "white";
             context.fillRect(0,0, size.width, size.height);
@@ -297,10 +300,6 @@
 	                }
                 }
                 
-            });
-            
-            document.addEventListener("touchend", function(event){
-                touch = false;
             });
        };
     }
