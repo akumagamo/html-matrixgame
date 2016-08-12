@@ -248,6 +248,29 @@
         
         document.getElementById("result").appendChild(canvas);
         
+        
+	var buttonSize = window.screen.width/4;
+	var touch = false;
+	
+	document.addEventListener("touchstart", function(event){
+		var x = event.touches[0].clientX;
+		var y = event.touches[0].clientY;
+		if(touch===false){
+			touch = true;
+		        if(y > window.screen.height*3/4){
+		            if( buttonSize > x ){
+		                game.moveLeft();
+		            } else if( buttonSize * 3 > x ){
+		                game.moveDown();
+		            } else {
+		                game.moveRight();
+		            }
+		        }
+		}
+		
+	});
+	
+
         document.addEventListener("touchend", function(event){
         	touch = false;
         });
@@ -281,26 +304,6 @@
             
             document.getElementById("scoreBoard").innerHTML = game.currentGame.score;
 
-            var buttonSize = window.screen.width/4;
-            var touch = false;
-
-            document.addEventListener("touchstart", function(event){
-                var x = event.touches[0].clientX;
-                var y = event.touches[0].clientY;
-                if(touch===false){
-	        	touch = true;
-	                if(y > window.screen.height*3/4){
-	                    if( buttonSize > x ){
-	                        game.moveLeft();
-	                    } else if( buttonSize * 3 > x ){
-	                        game.moveDown();
-	                    } else {
-	                        game.moveRight();
-	                    }
-	                }
-                }
-                
-            });
        };
     }
 
